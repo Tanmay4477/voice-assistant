@@ -1,7 +1,7 @@
 import { View, Text, Image } from 'react-native';
 import { FC } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import cn from "../utils/cn.ts";
+import clsx from 'clsx'
 
 type CardProps = {
     name: 'General Question' | 'Generate Image' | 'Smart AI';
@@ -17,13 +17,13 @@ const Card: FC<CardProps> = ({name, content, imgSource}) => {
     }[name];
 
     return (
-        <View  className='!px-[10px] rounded-xl bg-red-500 m-2'>
+        <View  className={clsx('rounded-xl p-2', bgColor)}>
             <View className="flex flex-row justify-start items-center gap-2">
                 <Image style={{width: wp(8), height: hp(4)}} source={imgSource} />
-                <Text className="font-medium text-2xl" >{name}</Text>
+                <Text style={{fontSize: wp(4.8)}} className="font-medium text-2xl" >{name}</Text>
             </View>
             <View>
-                <Text className="text-lg tracking-tighter leading-tight">{content}</Text>
+                <Text style={{fontSize: wp(3.8)}} className="text-lg tracking-tighter leading-tight">{content}</Text>
             </View>
         </View>
     )
