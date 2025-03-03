@@ -1,13 +1,13 @@
 import { View, Text, SafeAreaView, Image } from "react-native";
 import React from "react";
-import { dummyMessages } from "../constants/index.ts";
+import { dummyMessages, messageType } from "../constants/index.ts";
 import { useState } from "react"
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Features from "../components/Feature";
 import { Assistant } from "../components/Assistant.tsx";
 
 export default function HomeScreen() {
-  const [message, setMessage] = useState([dummyMessages]);
+  const [messages, setMessages] = useState<messageType[]>(dummyMessages);
   
   return (
     <View className="flex-1 bg-white">
@@ -15,8 +15,8 @@ export default function HomeScreen() {
         <View className="flex-row justify-center mt-4">
           <Image style={{width: wp(40), height: wp(40)}} source={require('../../assets/images/bot.png')}/>
         </View>
-        {/* <Features /> */}
-        <Assistant />
+
+        {messages.length>0 ? <Assistant messages={messages} /> : <Features />}
       </SafeAreaView>
     </View>
 )}
