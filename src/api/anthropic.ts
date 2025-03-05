@@ -1,8 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { apiKey, messageType } from "../constants";
+import { API_URL } from '@env';
 
 const anthropic = new Anthropic({
-    apiKey: apiKey
+    apiKey: API_URL
 });
 
 export default async function generateAiResponse(result: string) {
