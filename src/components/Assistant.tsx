@@ -1,8 +1,9 @@
-import { View, Text, FlatList, Image } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { messageType } from '../constants';
+import React from 'react';
 
-export const Assistant = ({messages}: {messages: messageType[]}) => {
+export const Assistant = ({messages, isRecording, recordingBtnClick, clearMessages}: {messages: messageType[], isRecording: boolean, recordingBtnClick: () => void, clearMessages: () => void}) => {
 
     const renderItem = ({item, index}: {item: messageType, index: number}) => {
         if (item.role === "assistant") {
@@ -52,8 +53,19 @@ export const Assistant = ({messages}: {messages: messageType[]}) => {
     return (
         <View className='flex-1 gap-2'>
             <Text style={{fontSize: wp(5)}} className='text-xl font-medium text-gray-700 ml-1'>Assistant</Text>
-            <View style={{height: hp(58)}} className='bg-neutral-200 rounded-3xl p-4'>
+            <View style={{height: hp(60)}} className='bg-neutral-200 rounded-3xl p-4'>
                 <FlatList contentContainerClassName='gap-4' data={messages} renderItem={renderItem} keyExtractor={(item, index) => index.toString()}/>
+            </View>
+            <View className='flex-row gap-2 justify-around items-center px-10'>
+                {isRecording ? <Text className='bg-red-400 p-2 rounded-2xl'>Recording</Text> : <Text className='bg-red-400 p-2 rounded-2xl'>Stopped</Text>}
+                <TouchableOpacity onPress={recordingBtnClick} activeOpacity={0.7}>
+                    {isRecording ? 
+                        <Image style={{width: wp(20), height: wp(20)}} source={require('../../assets/images/voiceLoading.gif')}/> : 
+                        <Image style={{width: wp(20), height: wp(20)}} source={require('../../assets/images/recordingIcon.png')} />}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={clearMessages}>
+                    <Text className='bg-gray-400 p-2 rounded-2xl'>Go Back</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
