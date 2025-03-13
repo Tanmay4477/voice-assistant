@@ -1,5 +1,5 @@
-import { View, SafeAreaView, Image } from "react-native";
-import React from "react";
+import { View, SafeAreaView, Image, FlatList } from "react-native";
+import React, { useRef } from "react";
 import { dummyMessages, messageType, Role } from "../constants/index.ts";
 import { useState, useEffect } from "react"
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -13,6 +13,8 @@ export default function HomeScreen(): React.JSX.Element {
   const [messages, setMessages] = useState<messageType[]>(dummyMessages);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [result, setResult] = useState<string | null>(null);
+  const flatListRef = useRef<FlatList<messageType>>(null);
+
 
   const speechStartHandler = () => {
     console.log('Speech started');
@@ -48,12 +50,19 @@ export default function HomeScreen(): React.JSX.Element {
     }
   }, []);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [messages])
+
   const recordingBtnClick = async () => {
     const newState = !isRecording;
     setIsRecording(newState);
 
     if (newState) {
       try {
+        setResult(null);
         await Voice.start('en-IN');
       }
       catch (error) {
@@ -71,7 +80,7 @@ export default function HomeScreen(): React.JSX.Element {
               const response = await generateAiResponse(result.trim());
               if (response) {
                 console.log("i also the ai respone", response);
-                let aiResponse = [...messages];
+                let aiResponse = [...newMessages];
                 aiResponse.push({role: Role.ASSISTANT, content: response});
                 setMessages(aiResponse);
                 Tts.speak(response);
@@ -102,7 +111,7 @@ export default function HomeScreen(): React.JSX.Element {
           <Image style={{width: wp(30), height: wp(30)}} source={require('../../assets/images/bot.png')}/>
         </View>
 
-        {messages.length>0 ? <Assistant messages={messages} isRecording={isRecording} recordingBtnClick={recordingBtnClick} clearMessages={clearMessages}/> : <Features />}
+        {messages.length>0 ? <Assistant messages={messages} flatListRef={flatListRef} isRecording={isRecording} recordingBtnClick={recordingBtnClick} clearMessages={clearMessages}/> : <Features />}
       </SafeAreaView>
     </View>
 )}

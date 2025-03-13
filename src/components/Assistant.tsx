@@ -1,9 +1,9 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { messageType } from '../constants/index';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-export const Assistant = ({messages, isRecording, recordingBtnClick, clearMessages}: {messages: messageType[], isRecording: boolean, recordingBtnClick: () => void, clearMessages: () => void}) => {
+export const Assistant = ({messages, isRecording, recordingBtnClick, clearMessages, flatListRef}: {messages: messageType[], isRecording: boolean, recordingBtnClick: () => void, clearMessages: () => void, flatListRef: any}) => {
 
     const renderItem = ({item, index}: {item: messageType, index: number}) => {
         if (item.role === "assistant") {
@@ -54,7 +54,7 @@ export const Assistant = ({messages, isRecording, recordingBtnClick, clearMessag
         <View className='flex-1 gap-2'>
             <Text style={{fontSize: wp(5)}} className='text-xl font-medium text-gray-700 ml-1'>Assistant</Text>
             <View style={{height: hp(60)}} className='bg-neutral-200 rounded-3xl p-4'>
-                <FlatList contentContainerClassName='gap-4' data={messages} renderItem={renderItem} keyExtractor={(item, index) => index.toString()}/>
+                <FlatList ref={flatListRef} contentContainerClassName='gap-4' data={messages} renderItem={renderItem} keyExtractor={(item, index) => index.toString()}/>
             </View>
             <View className='flex-row gap-2 justify-around items-center px-10'>
                 {isRecording ? <Text className='bg-red-400 p-2 rounded-2xl'>Recording</Text> : <Text className='bg-red-400 p-2 rounded-2xl'>Stopped</Text>}

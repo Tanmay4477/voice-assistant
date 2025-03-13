@@ -47,7 +47,6 @@ const generateAiResponse = async (param: string) => {
             role: 'assistant',
             parts: [{text: result.response.text()}]
         });
-        console.log(messages, "this is the messages final");
         return result.response.text();
     } catch (error) {
         console.log("Error of gemini", error)
