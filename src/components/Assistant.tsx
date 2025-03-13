@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { messageType } from '../constants';
+import { messageType } from '../constants/index';
 import React from 'react';
 
 export const Assistant = ({messages, isRecording, recordingBtnClick, clearMessages}: {messages: messageType[], isRecording: boolean, recordingBtnClick: () => void, clearMessages: () => void}) => {

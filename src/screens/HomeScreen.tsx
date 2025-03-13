@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, Image } from "react-native";
 import React from "react";
-import { dummyMessages, messageType } from "../constants/index.ts";
+import { dummyMessages, messageType, Role } from "../constants/index.ts";
 import { useState, useEffect } from "react"
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Features from "../components/Feature";
@@ -8,11 +8,13 @@ import { Assistant } from "../components/Assistant.tsx";
 import Voice from '@react-native-community/voice';
 import generateAiResponse from "../api/anthropic.ts";
 import Tts from "react-native-tts";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/navigationTypes.ts";
 
-export default function HomeScreen() {
+export default function HomeScreen(): React.JSX.Element {
   const [messages, setMessages] = useState<messageType[]>(dummyMessages);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<string | null>(null);
 
   const speechStartHandler = () => {
     console.log('Speech started');
@@ -63,19 +65,19 @@ export default function HomeScreen() {
     else {
       try {
         await Voice.stop();
-        if (result.trim().length > 0) {
-          let newMessages = [...messages];
-          newMessages.push({role: 'user', content: result.trim()});
-          setMessages(newMessages);
-          console.log("It reached here");
-          const response = await generateAiResponse(result.trim());
-          if (response) {
-            console.log("i also the ai respone", response);
-            let aiResponse = [...messages];
-            aiResponse.push({role: 'assistant', content: response});
-            setMessages(aiResponse);
-            Tts.speak(response);
-          }
+          if (result && result.trim().length > 0) {
+            let newMessages = [...messages];
+            newMessages.push({role: Role.USER, content: result.trim()});
+            setMessages(newMessages);
+            console.log("It reached here");
+            const response = await generateAiResponse(result.trim());
+            if (response) {
+              console.log("i also the ai respone", response);
+              let aiResponse = [...messages];
+              aiResponse.push({role: Role.ASSISTANT, content: response});
+              setMessages(aiResponse);
+              Tts.speak(response);
+            }
         }
       }
       catch (error) {

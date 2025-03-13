@@ -2,9 +2,12 @@ import { View, Text, SafeAreaView, Image, TouchableOpacity } from "react-native"
 import React from "react";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp} from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native"
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/navigationTypes";
 
-export default function WelcomeScreen() {
-  const navigation = useNavigation();
+type WelcomeScreenNavigationProp = NativeStackScreenProps<RootStackParamList, "Welcome">
+
+export default function WelcomeScreen({ navigation }: WelcomeScreenNavigationProp): React.JSX.Element {
 
   return (
     <SafeAreaView className="flex-1 flex justify-around items-center bg-white text-gray-600">
@@ -15,7 +18,7 @@ export default function WelcomeScreen() {
         <View className="flex-row justify-center">
             <Image source={require('../../assets/images/welcome.png')} style={{width: wp(80), height: hp(40)}}/>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} className="bg-green-500 p-5 rounded-xl w-10/12">
+        <TouchableOpacity onPress={() => navigation.navigate("Home")} className="bg-green-500 p-5 rounded-xl w-10/12">
             <Text className="text-center text-2xl text-white font-bold">Get Started</Text>
         </TouchableOpacity>
     </SafeAreaView>
