@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image } from "react-native";
+import { View, SafeAreaView, Image } from "react-native";
 import React from "react";
 import { dummyMessages, messageType, Role } from "../constants/index.ts";
 import { useState, useEffect } from "react"
@@ -8,8 +8,6 @@ import { Assistant } from "../components/Assistant.tsx";
 import Voice from '@react-native-community/voice';
 import generateAiResponse from "../api/anthropic.ts";
 import Tts from "react-native-tts";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/navigationTypes.ts";
 
 export default function HomeScreen(): React.JSX.Element {
   const [messages, setMessages] = useState<messageType[]>(dummyMessages);
@@ -69,15 +67,22 @@ export default function HomeScreen(): React.JSX.Element {
             let newMessages = [...messages];
             newMessages.push({role: Role.USER, content: result.trim()});
             setMessages(newMessages);
-            console.log("It reached here");
-            const response = await generateAiResponse(result.trim());
-            if (response) {
-              console.log("i also the ai respone", response);
-              let aiResponse = [...messages];
-              aiResponse.push({role: Role.ASSISTANT, content: response});
-              setMessages(aiResponse);
-              Tts.speak(response);
+            try {
+              const response = await generateAiResponse(result.trim());
+              if (response) {
+                console.log("i also the ai respone", response);
+                let aiResponse = [...messages];
+                aiResponse.push({role: Role.ASSISTANT, content: response});
+                setMessages(aiResponse);
+                Tts.speak(response);
+              }
+              else {
+                console.log("response did not come, do not know why")
+              }
+            } catch (error) {
+              console.log("This is the error if generate ai response", error)
             }
+            
         }
       }
       catch (error) {
