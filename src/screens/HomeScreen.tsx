@@ -5,10 +5,9 @@ import { useState, useEffect } from "react"
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Features from "../components/Feature";
 import { Assistant } from "../components/Assistant.tsx";
-// import Voice from '@react-native-voice/voice';
+import Voice from '@react-native-voice/voice';
 import generateAiResponse from "../api/anthropic.ts";
 import Tts from "react-native-tts";
-
 
 const HomeScreen = () => {
 
@@ -39,21 +38,21 @@ const HomeScreen = () => {
     console.log('Speech Errros');
   }
 
-//   useEffect(() => {
-//     Voice.onSpeechStart = speechStartHandler;
-//     Voice.onSpeechEnd = speechEndHandler;
-//     Voice.onSpeechResults = speechResultsHandler;
-//     Voice.onSpeechError = speechErrorHandler;
+  useEffect(() => {
+    Voice.onSpeechStart = speechStartHandler;
+    Voice.onSpeechEnd = speechEndHandler;
+    Voice.onSpeechResults = speechResultsHandler;
+    Voice.onSpeechError = speechErrorHandler;
 
-//     Tts.addEventListener('tts-start', (event) => console.log("start", event));
-//     Tts.addEventListener('tts-progress', (event) => console.log("progress", event));
-//     Tts.addEventListener('tts-finish', (event) => console.log("finish", event));
-//     Tts.addEventListener('tts-cancel', (event) => console.log("cancel", event));
+    Tts.addEventListener('tts-start', (event) => console.log("start", event));
+    Tts.addEventListener('tts-progress', (event) => console.log("progress", event));
+    Tts.addEventListener('tts-finish', (event) => console.log("finish", event));
+    Tts.addEventListener('tts-cancel', (event) => console.log("cancel", event));
 
-//     return () => {
-//       Voice.destroy().then(Voice.removeAllListeners);
-//     }
-//   }, []);
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    }
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -65,44 +64,44 @@ const HomeScreen = () => {
     const newState = !isRecording;
     setIsRecording(newState);
 
-//     if (newState) {
-//       try {
-//         setResult(null);
-//         await Voice.start('en-IN');
-//       }
-//       catch (error) {
-//         console.log(`Error is `, error);
-//       }
-//     }
-//     else {
-//       try {
-//         await Voice.stop();
-//           if (result && result.trim().length > 0) {
-//             let newMessages = [...messages];
-//             newMessages.push({role: Role.USER, content: result.trim()});
-//             setMessages(newMessages);
-//             try {
-//               const response = await generateAiResponse(result.trim());
-//               if (response) {
-//                 console.log("i also the ai respone", response);
-//                 let aiResponse = [...newMessages];
-//                 aiResponse.push({role: Role.ASSISTANT, content: response});
-//                 setMessages(aiResponse);
-//                 Tts.speak(response);
-//               }
-//               else {
-//                 console.log("response did not come, do not know why")
-//               }
-//             } catch (error) {
-//               console.log("This is the error if generate ai response", error)
-//             }
+    if (newState) {
+      try {
+        setResult(null);
+        await Voice.start('en-IN');
+      }
+      catch (error) {
+        console.log(`Error is `, error);
+      }
+    }
+    else {
+      try {
+        await Voice.stop();
+          if (result && result.trim().length > 0) {
+            let newMessages = [...messages];
+            newMessages.push({role: Role.USER, content: result.trim()});
+            setMessages(newMessages);
+            try {
+              const response = await generateAiResponse(result.trim());
+              if (response) {
+                console.log("i also the ai respone", response);
+                let aiResponse = [...newMessages];
+                aiResponse.push({role: Role.ASSISTANT, content: response});
+                setMessages(aiResponse);
+                Tts.speak(response);
+              }
+              else {
+                console.log("response did not come, do not know why")
+              }
+            } catch (error) {
+              console.log("This is the error if generate ai response", error)
+            }
             
-//         }
-//       }
-//       catch (error) {
-//         console.log(`Error is ${error}`);
-//       }
-//     }
+        }
+      }
+      catch (error) {
+        console.log(`Error is ${error}`);
+      }
+    }
   }
 
   const clearMessages = () => {
